@@ -1,10 +1,13 @@
-import React from 'react';
 import { View, Text, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { useAppContext } from '../context/AppContext';
 
 const LobbyScreen = ({ navigation }) => {
   const { state, dispatch } = useAppContext();
-  const { currentUser , currentRoom } = state;
+
+  const initialState = {
+    currentUser: null,
+    currentRoom: null,
+  };
 
   const handleCreateRoom = () => {
     const roomCode = 'ROOM' + Math.random().toString(36).substr(2, 4).toUpperCase();

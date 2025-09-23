@@ -1,4 +1,3 @@
-import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 const Button = ({ title, onPress, style, primary = true }) => {

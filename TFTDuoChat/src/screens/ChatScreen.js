@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,21 +7,17 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  Alert,
 } from 'react-native';
 import MessageBubble from '../components/MessageBubble';
 import { useAppContext } from '../context/AppContext';
-import { useNavigation } from '@react-navigation/native';
 
 const ChatScreen = () => {
   const [messageText, setMessageText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const { state, dispatch } = useAppContext();
-  const navigation = useNavigation();
   const flatListRef = useRef();
 
   useEffect(() => {
-    // Mensagem de boas-vindas
     const welcomeMsg = {
       id: Date.now().toString(),
       text: `Bem-vindo à sala ${state.currentRoom}! Converse sobre TFT com seu duo.`,

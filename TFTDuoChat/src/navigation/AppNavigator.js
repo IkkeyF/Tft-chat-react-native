@@ -1,26 +1,25 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/MaterialIcons';  // Para ícones nas tabs
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-// Importe todas as telas
-import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import LobbyScreen from '../screens/LobbyScreen';
-import WaitingScreen from '../screens/WaitingScreen';  // ← Adicione esta import
+import WaitingScreen from '../screens/WaitingScreen';
 import ChatScreen from '../screens/ChatScreen';
+
+import { useAppContext } from '../context/AppContext'; 
+import WelcomeScreen from '../screens/WelcomeScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 // Navegador de Tabs (para Lobby e Chat)
-function TabNavigator({ state }) {
+function TabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ color, size }) => {
           let iconName;
           if (route.name === 'Lobby') iconName = 'dashboard';
           else if (route.name === 'Chat') iconName = 'chat';
@@ -38,25 +37,25 @@ function TabNavigator({ state }) {
 }
 
 // Navegador Principal (Stack para fluxos)
-export default function AppNavigator({ state }) {
-  const isLoggedIn = !!state.currentUser  ;  // Do AppContext
+export default function AppNavigator() {
+  const { state } = useAppContext();     
+  const isLoggedIn = !!state?.currentUser;
 
   return (
-    <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {isLoggedIn ? (
           <>
             <Stack.Screen name="MainTabs" component={TabNavigator} />
-            <Stack.Screen name="WaitingScreen" component={WaitingScreen} />  // ← Registre aqui como 'WaitingScreen'
+            <Stack.Screen name="WaitingScreen" component={WaitingScreen} />
           </>
         ) : (
           <>
-            <Stack.Screen name="Home" component={HomeScreen} />
+            {/* Só colocar a HomeScreen aqui depois */}
+            <Stack.Screen name="Welcome" component={WelcomeScreen} />
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Register" component={RegisterScreen} />
           </>
         )}
       </Stack.Navigator>
-    </NavigationContainer>
   );
 }
