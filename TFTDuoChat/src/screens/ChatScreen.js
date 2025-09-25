@@ -6,16 +6,19 @@ import {
   FlatList,
   StyleSheet,
   KeyboardAvoidingView,
-  Platform,
+  TouchableOpacity,
 } from 'react-native';
 import MessageBubble from '../components/MessageBubble';
 import { useAppContext } from '../context/AppContext';
+import { Feather } from '@expo/vector-icons/Feather';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ChatScreen = () => {
   const [messageText, setMessageText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const { state, dispatch } = useAppContext();
   const flatListRef = useRef();
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     const welcomeMsg = {
@@ -100,11 +103,7 @@ const ChatScreen = () => {
   const keyExtractor = (item) => item.id;
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-    >
+    <SafeAreaProvider style={{paddingBottom: insets.bottom}}>
       <View style={styles.header}>
         <Text style={styles.roomTitle}>Sala: {state.currentRoom}</Text>
         {isTyping && <Text style={styles.typing}>Seu duo está digitando...</Text>}
@@ -116,24 +115,34 @@ const ChatScreen = () => {
         renderItem={renderMessage}
         keyExtractor={keyExtractor}
         style={styles.messagesList}
-        contentContainerStyle={styles.messagesContainer}
+        contentContainerStyle={[styles.messagesContainer, { flexGrow: 1 }]}
         onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
         onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
       />
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          value={messageText}
-          onChangeText={setMessageText}
-          placeholder="Digite sua mensagem sobre TFT..."
-          placeholderTextColor="#999"
-          multiline
-          onSubmitEditing={sendMessage}
-        />
-        <Button title="Enviar" onPress={sendMessage} style={styles.sendButton} />
-      </View>
-    </KeyboardAvoidingView>
+      <KeyboardAvoidingView
+        behavior={'height'}
+        keyboardVerticalOffset={0} 
+        >
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={messageText}
+              onChangeText={setMessageText}
+              placeholder="Digite sua mensagem sobre TFT..."
+              placeholderTextColor="#999"
+              multiline
+              onSubmitEditing={sendMessage}
+            />
+            <TouchableOpacity
+              onPress={sendMessage} 
+              style={styles.sendButton}
+              >
+              <Feather name="send" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
+      </KeyboardAvoidingView>
+    </SafeAreaProvider>
   );
 };
 
@@ -143,8 +152,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a1a2e',
   },
   header: {
-    backgroundColor: '#2d2d3a',
-    padding: 15,
+    backgroundColor: '#1a1a2e',
+    paddingTop: 50,
+    paddingBottom: 10,
     alignItems: 'center',
   },
   roomTitle: {
@@ -160,6 +170,7 @@ const styles = StyleSheet.create({
   messagesList: {
     flex: 1,
     padding: 10,
+    backgroundColor: '#1a1a2e'
   },
   messagesContainer: {
     paddingBottom: 10,
@@ -182,8 +193,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   sendButton: {
-    width: 80,
-    height: 44,
+    width: 60,
+    height: 50,
+    backgroundColor: '#f8c537',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20
   },
 });
 

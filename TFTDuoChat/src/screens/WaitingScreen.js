@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, Clipboard } from 'react-native';
+import { useState } from 'react';
+import { View, Text, StyleSheet, Clipboard } from 'react-native';
 import Button from '../components/Button';
 import { useAppContext } from '../context/AppContext';
 import { useNavigation } from '@react-navigation/native';
@@ -7,20 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 const WaitingScreen = () => {
   const { state, dispatch } = useAppContext();
   const [copied, setCopied] = useState(false);
-  const [duoJoined, setDuoJoined] = useState(false);
   const navigation = useNavigation();
-
-  useEffect(() => {
-    // Simula duo entrando após 3 segundos (para demo)
-    const timer = setTimeout(() => {
-      if (state.isHost && !duoJoined) {
-        setDuoJoined(true);
-        dispatch({ type: 'JOIN_ROOM', payload: state.currentRoom, partner: 'Seu Duo' });
-      }
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [state.isHost, duoJoined]);
 
   const handleCopyCode = async () => {
     if (state.currentRoom) {
@@ -31,11 +18,11 @@ const WaitingScreen = () => {
   };
 
   const handleStartChat = () => {
-    navigation.navigate('Chat');
+    navigation.navigate('ChatScreen');
   };
 
   const handleBack = () => {
-    dispatch({ type: 'CREATE_ROOM', payload: null }); // Limpa sala
+    dispatch({ type: 'CREATE_ROOM', payload: null });
     navigation.goBack();
   };
 
@@ -45,9 +32,7 @@ const WaitingScreen = () => {
         <Text style={styles.iconText}>⏳</Text>
       </View>
       <Text style={styles.title}>Sala Criada!</Text>
-      <Text style={styles.subtitle}>
-        {duoJoined ? 'Seu duo entrou na sala!' : 'Aguardando seu duo entrar na sala...'}
-      </Text>
+      <Text style={styles.subtitle}>Aguardando seu duo entrar na sala...</Text>
 
       <View style={styles.codeContainer}>
         <Text style={styles.codeLabel}>Código da Sala:</Text>
@@ -63,28 +48,28 @@ const WaitingScreen = () => {
       <View style={styles.usersContainer}>
         <View style={[styles.userCard, styles.host]}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{state.currentUser ?.charAt(0).toUpperCase() || 'H'}</Text>
+            <Text style={styles.avatarText}>H</Text>
           </View>
           <View>
-            <Text style={styles.username}>{state.currentUser  || 'Você'}</Text>
+            <Text style={styles.username}>Você</Text>
             <Text style={styles.role}>Host</Text>
           </View>
         </View>
 
-        <View style={[styles.userCard, duoJoined ? styles.guest : styles.empty]}>
+        <View style={[styles.userCard, styles.guest]}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{duoJoined ? 'D' : '?'}</Text>
+            <Text style={styles.avatarText}>D</Text>
           </View>
           <View>
-            <Text style={styles.username}>{duoJoined ? state.partner : 'Aguardando duo'}</Text>
-            <Text style={styles.role}>{duoJoined ? 'Duo' : 'Vazio'}</Text>
+            <Text style={styles.username}>Aguardando duo</Text>
+            <Text style={styles.role}>Vazio</Text>
           </View>
         </View>
       </View>
 
-      {duoJoined && (
-        <Button title="Iniciar Chat Overlay" onPress={handleStartChat} />
-      )}
+
+      <Button title="Iniciar Chat Overlay" onPress={handleStartChat} />
+
       <Button title="Voltar" onPress={handleBack} primary={false} style={{ marginTop: 10 }} />
     </View>
   );
@@ -163,6 +148,7 @@ const styles = StyleSheet.create({
   guest: {
     borderColor: '#4a4a5a',
     borderWidth: 2,
+    backgroundColor: '#202029ff',
   },
   empty: {
     opacity: 0.5,

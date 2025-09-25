@@ -2,11 +2,12 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import Button from '../components/Button';
 import { useNavigation } from '@react-navigation/native';
 
-const WelcomeScreen = () => {
+export default function WelcomeScreen() {
   const navigation = useNavigation();
 
-  const handleLogin = () => navigation.navigate('Login');
-  const handleRegister = () => navigation.navigate('Register');
+  const handleLogin = () => navigation.navigate('LoginScreen');
+  const handleLobby = () => navigation.navigate('LobbyScreen');
+  const handleRegister = () => navigation.navigate('RegisterScreen');
 
   return (
     <View style={styles.container}>
@@ -20,6 +21,7 @@ const WelcomeScreen = () => {
       <View style={styles.buttonContainer}>
         <Button title="Entrar" onPress={handleLogin} />
         <Button title="Criar Conta" onPress={handleRegister} primary={false} />
+        <Button title="Ir ao Lobby" onPress={handleLobby} primary={false} style={{marginTop: 90}}/>
       </View>
     </View>
   );
@@ -57,5 +59,3 @@ const styles = StyleSheet.create({
     maxWidth: 300,
   },
 });
-
-export default WelcomeScreen;

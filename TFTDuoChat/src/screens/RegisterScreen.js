@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, ScrollView, Switch } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, ScrollView } from 'react-native';
 import Button from '../components/Button';
 import { useAppContext } from '../context/AppContext';
 import { useNavigation } from '@react-navigation/native';
+import { Checkbox } from 'react-native-paper';
 
 const RegisterScreen = () => {
   const [summonerName, setSummonerName] = useState('');
@@ -29,7 +30,7 @@ const RegisterScreen = () => {
     // Simulação de registro
     dispatch({ type: 'LOGIN', payload: summonerName });
     Alert.alert('Sucesso', 'Conta criada! Faça login.');
-    navigation.navigate('Main');
+    navigation.navigate('LoginScreen');
   };
 
   return (
@@ -70,7 +71,11 @@ const RegisterScreen = () => {
           placeholderTextColor="#999"
         />
         <View style={styles.termsContainer}>
-          <Switch value={termsAccepted} onValueChange={setTermsAccepted} trackColor={{ true: '#f8c537' }} />
+          <Checkbox
+            status={termsAccepted ? 'checked' : 'unchecked'}
+            onPress={() => setTermsAccepted(!termsAccepted)}
+            color="#f8c537"
+          />
           <Text style={styles.termsText}>
             Eu concordo com os{' '}
             <Text style={styles.link}>Termos de Serviço</Text>
@@ -79,7 +84,7 @@ const RegisterScreen = () => {
         <Button title="Criar Conta" onPress={handleRegister} />
         <Text style={styles.footer}>
           Já tem conta?{' '}
-          <Text onPress={() => navigation.navigate('Login')} style={styles.link}>
+          <Text onPress={() => navigation.navigate('LoginScreen')} style={styles.link}>
             Faça login
           </Text>
         </Text>
